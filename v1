@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Tracker - Smart Learning Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+        
+        .ai-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .study-session {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .completed {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6 px-4">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                    🤖
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold">AI Study Tracker</h1>
+                    <p class="text-sm opacity-90">Smart Learning Assistant</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-2">
+                    <div class="ai-pulse w-3 h-3 bg-green-400 rounded-full"></div>
+                    <span class="text-sm">AI Active</span>
+                </div>
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="showProfile()">
+                    <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                        <span id="profileInitials" class="text-sm font-semibold">JD</span>
+                    </div>
+                    <div class="hidden md:block">
+                        <p class="text-sm font-medium" id="profileName">John Doe</p>
+                        <p class="text-xs opacity-75" id="profileClass">12th Grade</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Authentication Pages -->
+    <div id="authContainer" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+        <!-- Sign In Form -->
+        <div id="signinForm" class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">🤖</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Welcome Back</h2>
+                <p class="text-gray-600 mt-2">Sign in to your AI Study Tracker</p>
+            </div>
+            
+            <form onsubmit="handleSignIn(event)" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="your@email.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all font-medium">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-gray-600">Don't have an account? 
+                    <button onclick="showSignUp()" class="text-blue-600 hover:text-blue-700 font-medium">Sign up</button>
+                </p>
+            </div>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div id="signupForm" class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md hidden">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">🤖</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Create Account</h2>
+                <p class="text-gray-600 mt-2">Join AI Study Tracker today</p>
+            </div>
+            
+            <form onsubmit="handleSignUp(event)" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <input type="text" id="signupName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="John Doe">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="signupEmail" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="your@email.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="signupPassword" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="••••••••">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all font-medium">
+                    Create Account
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-gray-600">Already have an account? 
+                    <button onclick="showSignIn()" class="text-blue-600 hover:text-blue-700 font-medium">Sign in</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Setup Form -->
+    <div id="profileSetupContainer" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 hidden">
+        <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">👋</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Complete Your Profile</h2>
+                <p class="text-gray-600 mt-2">Tell us more about yourself to personalize your experience</p>
+            </div>
+            
+            <form onsubmit="handleProfileSetup(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Class/Grade</label>
+                        <select id="setupClass" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Select Class</option>
+                            <option value="9th Grade">9th Grade</option>
+                            <option value="10th Grade">10th Grade</option>
+                            <option value="11th Grade">11th Grade</option>
+                            <option value="12th Grade">12th Grade</option>
+                            <option value="Freshman">Freshman</option>
+                            <option value="Sophomore">Sophomore</option>
+                            <option value="Junior">Junior</option>
+                            <option value="Senior">Senior</option>
+                            <option value="Graduate">Graduate</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                        <input type="number" id="setupAge" required min="13" max="100" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="18">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">School/Institution</label>
+                    <input type="text" id="setupSchool" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Your School Name">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Study Goal</label>
+                    <select id="setupGoal" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Select Goal</option>
+                        <option value="Improve Grades">Improve Grades</option>
+                        <option value="Exam Preparation">Exam Preparation</option>
+                        <option value="College Prep">College Preparation</option>
+                        <option value="Skill Development">Skill Development</option>
+                        <option value="General Learning">General Learning</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Favorite Subjects (Optional)</label>
+                    <input type="text" id="setupSubjects" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., Math, Physics, Chemistry">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all font-medium">
+                    Complete Setup
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- AI Insights Panel -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 card-hover">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                    <span class="mr-2">🧠</span>
+                    AI Study Insights
+                </h2>
+                <button onclick="generateInsight()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                    Generate New Insight
+                </button>
+            </div>
+            <div id="aiInsight" class="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border-l-4 border-purple-500">
+                <p class="text-gray-700">📊 Based on your study patterns, you're most productive between 2-4 PM. Consider scheduling challenging subjects during this time!</p>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Study Streak</p>
+                        <p class="text-2xl font-bold text-orange-600" id="studyStreak">7 days</p>
+                    </div>
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                        🔥
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Hours Today</p>
+                        <p class="text-2xl font-bold text-blue-600" id="hoursToday">3.5h</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        ⏰
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover cursor-pointer" onclick="showTaskAnalytics()">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Completed Tasks</p>
+                        <p class="text-2xl font-bold text-green-600" id="completedTasks">12/15</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        ✅
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">AI Score</p>
+                        <p class="text-2xl font-bold text-purple-600" id="aiScore">92%</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        🎯
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Study Sessions -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800">Today's Study Plan</h2>
+                        <button onclick="addStudySession()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            + Add Session
+                        </button>
+                    </div>
+                    
+                    <div id="studySessions" class="space-y-4">
+                        <!-- Study sessions will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subject Progress -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Subject Progress</h3>
+                        <button onclick="showSubjectChart()" class="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                            View Chart
+                        </button>
+                    </div>
+                    <div id="subjectProgress" class="space-y-4">
+                        <!-- Subject progress will be populated here -->
+                    </div>
+                </div>
+
+                <!-- AI Recommendations -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <span class="mr-2">💡</span>
+                        AI Recommendations
+                    </h3>
+                    <div id="recommendations" class="space-y-3">
+                        <!-- Recommendations will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Subject Progress Chart Modal -->
+    <div id="subjectChartModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-semibold">Subject Progress Overview</h3>
+                <button onclick="closeModal('subjectChartModal')" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <div class="flex justify-center mb-6">
+                <canvas id="subjectPieChart" width="300" height="300"></canvas>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div id="chartLegend" class="space-y-2">
+                    <!-- Legend will be populated here -->
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold mb-2">📊 Insights</h4>
+                    <div id="chartInsights" class="text-sm text-gray-700 space-y-1">
+                        <!-- Insights will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Analytics Modal -->
+    <div id="taskAnalyticsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-semibold">Task Performance Analytics</h3>
+                <button onclick="closeModal('taskAnalyticsModal')" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                    <h4 class="font-semibold text-green-800 mb-2">✅ Completed Tasks</h4>
+                    <p class="text-2xl font-bold text-green-600" id="completedCount">0</p>
+                    <p class="text-sm text-green-700">Great job on finishing these!</p>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-500">
+                    <h4 class="font-semibold text-orange-800 mb-2">⏳ Pending Tasks</h4>
+                    <p class="text-2xl font-bold text-orange-600" id="pendingCount">0</p>
+                    <p class="text-sm text-orange-700">Keep going, you're almost there!</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold mb-3 text-green-800">Completed Sessions</h4>
+                    <div id="completedTasksList" class="space-y-2 max-h-60 overflow-y-auto">
+                        <!-- Completed tasks will be populated here -->
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-3 text-orange-800">Pending Sessions</h4>
+                    <div id="pendingTasksList" class="space-y-2 max-h-60 overflow-y-auto">
+                        <!-- Pending tasks will be populated here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 bg-blue-50 p-4 rounded-lg">
+                <h4 class="font-semibold text-blue-800 mb-2">📈 Performance Insights</h4>
+                <div id="performanceInsights" class="text-sm text-blue-700 space-y-1">
+                    <!-- Performance insights will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-semibold">Student Profile</h3>
+                <button onclick="closeModal('profileModal')" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span id="modalProfileInitials" class="text-2xl font-bold text-white">JD</span>
+                </div>
+                <h4 class="text-lg font-semibold" id="modalProfileName">John Doe</h4>
+                <p class="text-gray-600" id="modalProfileEmail">john.doe@email.com</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <p class="text-gray-600">Class/Grade</p>
+                            <p class="font-medium" id="modalProfileClass">12th Grade</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600">Age</p>
+                            <p class="font-medium" id="modalProfileAge">18</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600">School</p>
+                            <p class="font-medium" id="modalProfileSchool">Springfield High</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600">Study Goal</p>
+                            <p class="font-medium" id="modalProfileGoal">College Prep</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h5 class="font-semibold text-blue-800 mb-2">📊 Quick Stats</h5>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div class="text-blue-700">
+                            <span class="font-medium">Study Streak:</span> 7 days
+                        </div>
+                        <div class="text-blue-700">
+                            <span class="font-medium">Total Hours:</span> 45.5h
+                        </div>
+                        <div class="text-blue-700">
+                            <span class="font-medium">Completed:</span> 12/15
+                        </div>
+                        <div class="text-blue-700">
+                            <span class="font-medium">AI Score:</span> 92%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex space-x-3 mt-6">
+                <button onclick="editProfile()" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    Edit Profile
+                </button>
+                <button onclick="signOut()" class="flex-1 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+                    Sign Out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-semibold">Edit Profile</h3>
+                <button onclick="closeModal('editProfileModal')" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <form onsubmit="saveProfileChanges(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <input type="text" id="editName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="editEmail" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Class/Grade</label>
+                        <select id="editClass" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Select Class</option>
+                            <option value="9th Grade">9th Grade</option>
+                            <option value="10th Grade">10th Grade</option>
+                            <option value="11th Grade">11th Grade</option>
+                            <option value="12th Grade">12th Grade</option>
+                            <option value="Freshman">Freshman</option>
+                            <option value="Sophomore">Sophomore</option>
+                            <option value="Junior">Junior</option>
+                            <option value="Senior">Senior</option>
+                            <option value="Graduate">Graduate</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                        <input type="number" id="editAge" required min="13" max="100" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">School/Institution</label>
+                    <input type="text" id="editSchool" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Study Goal</label>
+                    <select id="editGoal" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Select Goal</option>
+                        <option value="Improve Grades">Improve Grades</option>
+                        <option value="Exam Preparation">Exam Preparation</option>
+                        <option value="College Prep">College Preparation</option>
+                        <option value="Skill Development">Skill Development</option>
+                        <option value="General Learning">General Learning</option>
+                    </select>
+                </div>
+                <div class="flex space-x-3 mt-6">
+                    <button type="button" onclick="closeModal('editProfileModal')" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Session Modal -->
+    <div id="sessionModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+            <h3 class="text-lg font-semibold mb-4">Add Study Session</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                    <input type="text" id="sessionSubject" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., Mathematics">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Topic</label>
+                    <input type="text" id="sessionTopic" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="e.g., Calculus Integration">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
+                    <input type="number" id="sessionDuration" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="60" value="60">
+                </div>
+            </div>
+            <div class="flex space-x-3 mt-6">
+                <button onclick="closeModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Cancel</button>
+                <button onclick="saveSession()" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Add Session</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // User profile data
+        let userProfile = {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@email.com',
+            studentClass: '12th Grade',
+            age: 18,
+            school: 'Springfield High School',
+            studyGoal: 'College Prep'
+        };
+
+        // Sample data
+        let studySessions = [
+            { id: 1, subject: 'Mathematics', topic: 'Linear Algebra', duration: 90, completed: true, time: '9:00 AM' },
+            { id: 2, subject: 'Physics', topic: 'Quantum Mechanics', duration: 60, completed: false, time: '2:00 PM' },
+            { id: 3, subject: 'Chemistry', topic: 'Organic Reactions', duration: 75, completed: false, time: '4:00 PM' }
+        ];
+
+        let subjects = [
+            { name: 'Mathematics', progress: 85, color: 'blue' },
+            { name: 'Physics', progress: 72, color: 'green' },
+            { name: 'Chemistry', progress: 68, color: 'purple' },
+            { name: 'Biology', progress: 91, color: 'pink' }
+        ];
+
+        let aiRecommendations = [
+            { text: 'Review Physics formulas before tomorrow\'s session', priority: 'high' },
+            { text: 'Take a 15-minute break every hour', priority: 'medium' },
+            { text: 'Practice more Chemistry problems', priority: 'high' }
+        ];
+
+        let aiInsights = [
+            "📊 Based on your study patterns, you're most productive between 2-4 PM. Consider scheduling challenging subjects during this time!",
+            "🎯 Your retention rate improves by 23% when you take notes by hand. Try switching from digital notes for complex topics.",
+            "⚡ You complete tasks 15% faster on Tuesdays and Wednesdays. Plan your heaviest workload for these days.",
+            "🧠 Your focus peaks after 20 minutes of study. Use the Pomodoro technique for optimal results.",
+            "📈 Mathematics sessions show 40% better outcomes when scheduled after a 10-minute warm-up exercise."
+        ];
+
+        function renderStudySessions() {
+            const container = document.getElementById('studySessions');
+            container.innerHTML = studySessions.map(session => `
+                <div class="flex items-center justify-between p-4 rounded-lg ${session.completed ? 'completed' : 'study-session'} text-white">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                            ${session.completed ? '✅' : '📚'}
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">${session.subject}</h4>
+                            <p class="text-sm opacity-90">${session.topic}</p>
+                            <p class="text-xs opacity-75">${session.time} • ${session.duration} min</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        ${!session.completed ? `
+                            <button onclick="completeSession(${session.id})" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded text-sm transition-colors">
+                                Complete
+                            </button>
+                        ` : ''}
+                        <button onclick="deleteSession(${session.id})" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-2 py-1 rounded text-sm transition-colors">
+                            ×
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSubjectProgress() {
+            const container = document.getElementById('subjectProgress');
+            container.innerHTML = subjects.map(subject => `
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-700">${subject.name}</span>
+                        <span class="text-sm text-gray-500">${subject.progress}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="progress-bar bg-${subject.color}-500 h-2 rounded-full" style="width: ${subject.progress}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRecommendations() {
+            const container = document.getElementById('recommendations');
+            container.innerHTML = aiRecommendations.map(rec => `
+                <div class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <div class="w-2 h-2 rounded-full mt-2 ${rec.priority === 'high' ? 'bg-red-500' : 'bg-yellow-500'}"></div>
+                    <p class="text-sm text-gray-700 flex-1">${rec.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function addStudySession() {
+            document.getElementById('sessionModal').classList.remove('hidden');
+            document.getElementById('sessionModal').classList.add('flex');
+        }
+
+        function closeModal(modalId = 'sessionModal') {
+            document.getElementById(modalId).classList.add('hidden');
+            document.getElementById(modalId).classList.remove('flex');
+        }
+
+        // Authentication functions
+        function showSignUp() {
+            document.getElementById('signinForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.remove('hidden');
+        }
+
+        function showSignIn() {
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('signinForm').classList.remove('hidden');
+        }
+
+        function handleSignIn(event) {
+            event.preventDefault();
+            // Simulate successful login - show profile setup
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('profileSetupContainer').classList.remove('hidden');
+        }
+
+        function handleSignUp(event) {
+            event.preventDefault();
+            
+            // Get form data
+            const fullName = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            
+            // Basic validation
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Store basic info
+            const nameParts = fullName.trim().split(' ');
+            userProfile.firstName = nameParts[0] || 'User';
+            userProfile.lastName = nameParts.slice(1).join(' ') || '';
+            userProfile.email = email;
+            
+            // Show profile setup
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('profileSetupContainer').classList.remove('hidden');
+        }
+
+        function handleProfileSetup(event) {
+            event.preventDefault();
+            
+            // Get setup form data
+            const studentClass = document.getElementById('setupClass').value;
+            const age = document.getElementById('setupAge').value;
+            const school = document.getElementById('setupSchool').value;
+            const studyGoal = document.getElementById('setupGoal').value;
+            const subjects = document.getElementById('setupSubjects').value;
+            
+            // Update user profile
+            userProfile.studentClass = studentClass;
+            userProfile.age = parseInt(age);
+            userProfile.school = school;
+            userProfile.studyGoal = studyGoal;
+            userProfile.favoriteSubjects = subjects;
+            
+            // Update profile display
+            updateProfileDisplay();
+            
+            // Show dashboard
+            document.getElementById('profileSetupContainer').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+        }
+
+        function updateProfileDisplay() {
+            const fullName = `${userProfile.firstName} ${userProfile.lastName}`;
+            const initials = `${userProfile.firstName.charAt(0)}${userProfile.lastName.charAt(0)}`;
+            
+            // Update header profile
+            document.getElementById('profileName').textContent = fullName;
+            document.getElementById('profileClass').textContent = userProfile.studentClass;
+            document.getElementById('profileInitials').textContent = initials;
+            
+            // Update modal profile
+            document.getElementById('modalProfileName').textContent = fullName;
+            document.getElementById('modalProfileEmail').textContent = userProfile.email;
+            document.getElementById('modalProfileInitials').textContent = initials;
+            document.getElementById('modalProfileClass').textContent = userProfile.studentClass;
+            document.getElementById('modalProfileAge').textContent = userProfile.age;
+            document.getElementById('modalProfileSchool').textContent = userProfile.school;
+            document.getElementById('modalProfileGoal').textContent = userProfile.studyGoal;
+        }
+
+        function showProfile() {
+            document.getElementById('profileModal').classList.remove('hidden');
+            document.getElementById('profileModal').classList.add('flex');
+        }
+
+        function editProfile() {
+            // Populate edit form with current data
+            const fullName = `${userProfile.firstName} ${userProfile.lastName}`.trim();
+            document.getElementById('editName').value = fullName;
+            document.getElementById('editEmail').value = userProfile.email;
+            document.getElementById('editClass').value = userProfile.studentClass;
+            document.getElementById('editAge').value = userProfile.age;
+            document.getElementById('editSchool').value = userProfile.school;
+            document.getElementById('editGoal').value = userProfile.studyGoal;
+            
+            // Close profile modal and show edit modal
+            closeModal('profileModal');
+            document.getElementById('editProfileModal').classList.remove('hidden');
+            document.getElementById('editProfileModal').classList.add('flex');
+        }
+
+        function saveProfileChanges(event) {
+            event.preventDefault();
+            
+            // Get updated data
+            const fullName = document.getElementById('editName').value;
+            const email = document.getElementById('editEmail').value;
+            const studentClass = document.getElementById('editClass').value;
+            const age = document.getElementById('editAge').value;
+            const school = document.getElementById('editSchool').value;
+            const studyGoal = document.getElementById('editGoal').value;
+            
+            // Update user profile
+            const nameParts = fullName.trim().split(' ');
+            userProfile.firstName = nameParts[0] || 'User';
+            userProfile.lastName = nameParts.slice(1).join(' ') || '';
+            userProfile.email = email;
+            userProfile.studentClass = studentClass;
+            userProfile.age = parseInt(age);
+            userProfile.school = school;
+            userProfile.studyGoal = studyGoal;
+            
+            // Update profile display
+            updateProfileDisplay();
+            
+            // Close edit modal
+            closeModal('editProfileModal');
+            
+            // Show success message
+            alert('Profile updated successfully!');
+        }
+
+        function signOut() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('authContainer').classList.remove('hidden');
+            document.getElementById('profileModal').classList.add('hidden');
+            document.getElementById('profileModal').classList.remove('flex');
+        }
+
+        // Analytics functions
+        function showSubjectChart() {
+            document.getElementById('subjectChartModal').classList.remove('hidden');
+            document.getElementById('subjectChartModal').classList.add('flex');
+            drawPieChart();
+        }
+
+        function showTaskAnalytics() {
+            document.getElementById('taskAnalyticsModal').classList.remove('hidden');
+            document.getElementById('taskAnalyticsModal').classList.add('flex');
+            populateTaskAnalytics();
+        }
+
+        function drawPieChart() {
+            const canvas = document.getElementById('subjectPieChart');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 120;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const colors = ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899'];
+            let currentAngle = 0;
+            const total = subjects.reduce((sum, subject) => sum + subject.progress, 0);
+
+            // Draw pie slices
+            subjects.forEach((subject, index) => {
+                const sliceAngle = (subject.progress / total) * 2 * Math.PI;
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[index % colors.length];
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                currentAngle += sliceAngle;
+            });
+
+            // Update legend
+            const legend = document.getElementById('chartLegend');
+            legend.innerHTML = subjects.map((subject, index) => `
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 rounded" style="background-color: ${colors[index % colors.length]}"></div>
+                    <span class="text-sm">${subject.name}: ${subject.progress}%</span>
+                </div>
+            `).join('');
+
+            // Update insights
+            const insights = document.getElementById('chartInsights');
+            const topSubject = subjects.reduce((max, subject) => subject.progress > max.progress ? subject : max);
+            const lowSubject = subjects.reduce((min, subject) => subject.progress < min.progress ? subject : min);
+            
+            insights.innerHTML = `
+                <p>• ${topSubject.name} is your strongest subject at ${topSubject.progress}%</p>
+                <p>• ${lowSubject.name} needs more attention at ${lowSubject.progress}%</p>
+                <p>• Average progress: ${Math.round(total / subjects.length)}%</p>
+                <p>• You're doing great! Keep up the momentum.</p>
+            `;
+        }
+
+        function populateTaskAnalytics() {
+            const completed = studySessions.filter(s => s.completed);
+            const pending = studySessions.filter(s => !s.completed);
+
+            // Update counts
+            document.getElementById('completedCount').textContent = completed.length;
+            document.getElementById('pendingCount').textContent = pending.length;
+
+            // Populate completed tasks list
+            const completedList = document.getElementById('completedTasksList');
+            completedList.innerHTML = completed.length > 0 ? completed.map(task => `
+                <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-400">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h5 class="font-medium text-green-800">${task.subject}</h5>
+                            <p class="text-sm text-green-600">${task.topic}</p>
+                            <p class="text-xs text-green-500">${task.duration} min • ${task.time}</p>
+                        </div>
+                        <span class="text-green-600">✅</span>
+                    </div>
+                </div>
+            `).join('') : '<p class="text-gray-500 text-center py-4">No completed tasks yet</p>';
+
+            // Populate pending tasks list
+            const pendingList = document.getElementById('pendingTasksList');
+            pendingList.innerHTML = pending.length > 0 ? pending.map(task => `
+                <div class="bg-orange-50 p-3 rounded-lg border-l-4 border-orange-400">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h5 class="font-medium text-orange-800">${task.subject}</h5>
+                            <p class="text-sm text-orange-600">${task.topic}</p>
+                            <p class="text-xs text-orange-500">${task.duration} min • ${task.time}</p>
+                        </div>
+                        <span class="text-orange-600">⏳</span>
+                    </div>
+                </div>
+            `).join('') : '<p class="text-gray-500 text-center py-4">All tasks completed! 🎉</p>';
+
+            // Generate performance insights
+            const insights = document.getElementById('performanceInsights');
+            const completionRate = Math.round((completed.length / studySessions.length) * 100);
+            const totalStudyTime = completed.reduce((sum, task) => sum + task.duration, 0);
+            
+            insights.innerHTML = `
+                <p>• Completion rate: ${completionRate}% (${completed.length}/${studySessions.length} tasks)</p>
+                <p>• Total study time completed: ${Math.round(totalStudyTime / 60 * 10) / 10} hours</p>
+                <p>• Average session length: ${completed.length > 0 ? Math.round(totalStudyTime / completed.length) : 0} minutes</p>
+                <p>• ${completionRate >= 80 ? 'Excellent progress! You\'re on track.' : completionRate >= 60 ? 'Good work! Try to complete a few more tasks.' : 'Keep pushing! Focus on completing pending tasks.'}</p>
+            `;
+        }
+
+        function saveSession() {
+            const subject = document.getElementById('sessionSubject').value;
+            const topic = document.getElementById('sessionTopic').value;
+            const duration = document.getElementById('sessionDuration').value;
+
+            if (subject && topic && duration) {
+                const newSession = {
+                    id: Date.now(),
+                    subject: subject,
+                    topic: topic,
+                    duration: parseInt(duration),
+                    completed: false,
+                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    completedAt: null
+                };
+
+                studySessions.push(newSession);
+                renderStudySessions();
+                closeModal('sessionModal');
+
+                // Clear form
+                document.getElementById('sessionSubject').value = '';
+                document.getElementById('sessionTopic').value = '';
+                document.getElementById('sessionDuration').value = '60';
+            }
+        }
+
+        function completeSession(id) {
+            const session = studySessions.find(s => s.id === id);
+            if (session) {
+                session.completed = true;
+                session.completedAt = new Date().toISOString().split('T')[0];
+                renderStudySessions();
+                
+                // Update stats
+                const completedCount = studySessions.filter(s => s.completed).length;
+                document.getElementById('completedTasks').textContent = `${completedCount}/${studySessions.length}`;
+            }
+        }
+
+        function deleteSession(id) {
+            studySessions = studySessions.filter(s => s.id !== id);
+            renderStudySessions();
+            
+            // Update stats
+            const completedCount = studySessions.filter(s => s.completed).length;
+            document.getElementById('completedTasks').textContent = `${completedCount}/${studySessions.length}`;
+        }
+
+        function generateInsight() {
+            const randomInsight = aiInsights[Math.floor(Math.random() * aiInsights.length)];
+            document.getElementById('aiInsight').innerHTML = `<p class="text-gray-700">${randomInsight}</p>`;
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderStudySessions();
+            renderSubjectProgress();
+            renderRecommendations();
+            updateProfileDisplay();
+        });
+
+        // Close modals when clicking outside
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('sessionModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal('sessionModal');
+                }
+            });
+
+            document.getElementById('subjectChartModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal('subjectChartModal');
+                }
+            });
+
+            document.getElementById('taskAnalyticsModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal('taskAnalyticsModal');
+                }
+            });
+
+            document.getElementById('profileModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal('profileModal');
+                }
+            });
+
+            document.getElementById('editProfileModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal('editProfileModal');
+                }
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97e0783376217ee0',t:'MTc1NzY5MTI3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
